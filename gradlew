@@ -1,6 +1,8 @@
+# 💡 [RYFT REVIEW - SUGGESTION] Shebang line should be at the very top of the file.
 #!/bin/sh
 
 #
+# 💡 [RYFT REVIEW - SUGGESTION] Consider using a more specific license version (e.g., Apache License, Version 2.0, as of 2021).
 # Copyright © 2015-2021 the original authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,6 +66,7 @@
 
 # Attempt to set APP_HOME
 
+# 💡 [RYFT REVIEW - SUGGESTION] Consider using a more robust way to resolve symlinks, like `readlink -f`.
 # Resolve links: $0 may be a link
 app_path=$0
 
@@ -82,18 +85,23 @@ done
 
 # This is normally unused
 # shellcheck disable=SC2034
+# 💡 [RYFT REVIEW - SUGGESTION] The `shellcheck disable=SC2034` directive is unnecessary and can be removed.
 APP_BASE_NAME=${0##*/}
 # Discard cd standard output in case $CDPATH is set (https://github.com/gradle/gradle/issues/25036)
+# ⚠️ [RYFT REVIEW - WARNING] The `cd` command can fail if the directory does not exist, so it's better to check the return value.
 APP_HOME=$( cd "${APP_HOME:-./}" > /dev/null && pwd -P ) || exit
 
 # Use the maximum available, or set MAX_FD != -1 to use that value.
+# 🚨 [RYFT REVIEW - CRITICAL] The `maximum` value for `MAX_FD` is not a valid value, it should be a number.
 MAX_FD=maximum
 
 warn () {
+# ⚠️ [RYFT REVIEW - WARNING] The `warn` function does not handle the case where the input is not a string.
     echo "$*"
 } >&2
 
 die () {
+# ⚠️ [RYFT REVIEW - WARNING] The `die` function does not handle the case where the input is not a string.
     echo
     echo "$*"
     echo
@@ -101,6 +109,7 @@ die () {
 } >&2
 
 # OS specific support (must be 'true' or 'false').
+# 💡 [RYFT REVIEW - SUGGESTION] Consider using a more robust way to detect the operating system, like `uname -s`.
 cygwin=false
 msys=false
 darwin=false
@@ -112,10 +121,12 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `CLASSPATH` variable is not necessary, it can be removed.
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
 
 # Determine the Java command to use to start the JVM.
+# 💡 [RYFT REVIEW - SUGGESTION] The `if` statement can be simplified using a single `test` command.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
         # IBM's JDK on AIX uses strange locations for the executables
@@ -124,12 +135,14 @@ if [ -n "$JAVA_HOME" ] ; then
         JAVACMD=$JAVA_HOME/bin/java
     fi
     if [ ! -x "$JAVACMD" ] ; then
+# 💡 [RYFT REVIEW - SUGGESTION] The `die` function can be improved to provide more informative error messages.
         die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
 
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
     fi
 else
+# 💡 [RYFT REVIEW - SUGGESTION] The `JAVACMD` variable is not necessary, it can be removed.
     JAVACMD=java
     if ! command -v java >/dev/null 2>&1
     then
@@ -138,14 +151,17 @@ else
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
     fi
+# 💡 [RYFT REVIEW - SUGGESTION] The `die` function can be improved to provide more informative error messages.
 fi
 
 # Increase the maximum file descriptors if we can.
 if ! "$cygwin" && ! "$darwin" && ! "$nonstop" ; then
+# 💡 [RYFT REVIEW - SUGGESTION] The `case` statement can be simplified using a single `test` command.
     case $MAX_FD in #(
       max*)
         # In POSIX sh, ulimit -H is undefined. That's why the result is checked to see if it worked.
         # shellcheck disable=SC2039,SC3045
+# 💡 [RYFT REVIEW - SUGGESTION] The `warn` function can be improved to provide more informative error messages.
         MAX_FD=$( ulimit -H -n ) ||
             warn "Could not query maximum file descriptor limit"
     esac
@@ -154,12 +170,14 @@ if ! "$cygwin" && ! "$darwin" && ! "$nonstop" ; then
       *)
         # In POSIX sh, ulimit -n is undefined. That's why the result is checked to see if it worked.
         # shellcheck disable=SC2039,SC3045
+# ⚠️ [RYFT REVIEW - WARNING] The `ulimit` command can fail if the directory does not exist, so it's better to check the return value.
         ulimit -n "$MAX_FD" ||
             warn "Could not set maximum file descriptor limit to $MAX_FD"
     esac
 fi
 
 # Collect all arguments for the java command, stacking in reverse order:
+# 💡 [RYFT REVIEW - SUGGESTION] The `set` command can be improved to handle more complex argument lists.
 #   * args from the command line
 #   * the main class name
 #   * -classpath
@@ -168,38 +186,46 @@ fi
 #   * DEFAULT_JVM_OPTS, JAVA_OPTS, and GRADLE_OPTS environment variables.
 
 # For Cygwin or MSYS, switch paths to Windows format before running java
+# 💡 [RYFT REVIEW - SUGGESTION] The `if` statement can be simplified using a single `test` command.
 if "$cygwin" || "$msys" ; then
     APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
     CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
 
     JAVACMD=$( cygpath --unix "$JAVACMD" )
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `for` loop can be improved to handle more complex argument lists.
     # Now convert the arguments - kludge to limit ourselves to /bin/sh
     for arg do
         if
             case $arg in                                #(
               -*)   false ;;                            # don't mess with options #(
               /?*)  t=${arg#/} t=/${t%%/*}              # looks like a POSIX filepath
+# 💡 [RYFT REVIEW - SUGGESTION] The `case` statement can be simplified using a single `test` command.
                     [ -e "$t" ] ;;                      #(
               *)    false ;;
             esac
         then
+# 💡 [RYFT REVIEW - SUGGESTION] The `arg` variable can be improved to handle more complex argument lists.
             arg=$( cygpath --path --ignore --mixed "$arg" )
         fi
         # Roll the args list around exactly as many times as the number of
         # args, so each arg winds up back in the position where it started, but
         # possibly modified.
         #
+# 💡 [RYFT REVIEW - SUGGESTION] The `for` loop can be improved to handle more complex argument lists.
         # NB: a `for` loop captures its iteration list before it begins, so
         # changing the positional parameters here affects neither the number of
         # iterations, nor the values presented in `arg`.
         shift                   # remove old arg
+# 💡 [RYFT REVIEW - SUGGESTION] The `shift` command can be improved to handle more complex argument lists.
         set -- "$@" "$arg"      # push replacement arg
     done
 fi
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `DEFAULT_JVM_OPTS` variable can be improved to handle more complex JVM options.
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+# 💡 [RYFT REVIEW - SUGGESTION] The `DEFAULT_JVM_OPTS` variable can be improved to handle more complex JVM options.
 DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 
 # Collect all arguments for the java command:
@@ -208,6 +234,7 @@ DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 #   * For example: A user cannot expect ${Hostname} to be expanded, as it is an environment variable and will be
 #     treated as '${Hostname}' itself on the command line.
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `set` command can be improved to handle more complex argument lists.
 set -- \
         "-Dorg.gradle.appname=$APP_BASE_NAME" \
         -classpath "$CLASSPATH" \
@@ -219,26 +246,33 @@ if ! command -v xargs >/dev/null 2>&1
 then
     die "xargs is not available"
 fi
+# 💡 [RYFT REVIEW - SUGGESTION] The `die` function can be improved to provide more informative error messages.
 
 # Use "xargs" to parse quoted args.
 #
+# 💡 [RYFT REVIEW - SUGGESTION] The `eval` command can be improved to handle more complex argument lists.
 # With -n1 it outputs one arg per line, with the quotes and backslashes removed.
 #
 # In Bash we could simply go:
 #
 #   readarray ARGS < <( xargs -n1 <<<"$var" ) &&
 #   set -- "${ARGS[@]}" "$@"
+# 💡 [RYFT REVIEW - SUGGESTION] The `readarray` command can be improved to handle more complex argument lists.
 #
 # but POSIX shell has neither arrays nor command substitution, so instead we
+# 💡 [RYFT REVIEW - SUGGESTION] The `sed` command can be improved to handle more complex argument lists.
 # post-process each arg (as a line of input to sed) to backslash-escape any
 # character that might be a shell metacharacter, then use eval to reverse
 # that process (while maintaining the separation between arguments), and wrap
+# 💡 [RYFT REVIEW - SUGGESTION] The `tr` command can be improved to handle more complex argument lists.
 # the whole thing up as a single "set" statement.
 #
 # This will of course break if any of these variables contains a newline or
+# 💡 [RYFT REVIEW - SUGGESTION] The `eval` command can be improved to handle more complex argument lists.
 # an unmatched quote.
 #
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `eval` command can be improved to handle more complex argument lists.
 eval "set -- $(
         printf '%s\n' "$DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS" |
         xargs -n1 |
@@ -246,4 +280,5 @@ eval "set -- $(
         tr '\n' ' '
     )" '"$@"'
 
+# 💡 [RYFT REVIEW - SUGGESTION] The `exec` command can be improved to handle more complex argument lists.
 exec "$JAVACMD" "$@"
