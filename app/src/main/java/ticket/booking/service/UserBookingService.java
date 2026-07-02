@@ -10,9 +10,9 @@ import ticket.booking.entities.User;
 import ticket.booking.util.UserServiceUtil;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class UserBookingService{
     
@@ -68,28 +68,24 @@ public class UserBookingService{
         }
     }
 
-        // todo: Complete this function
-         public Boolean cancelBooking(String ticketId){
-    
-        Scanner s = new Scanner(System.in);
-        System.out.println("Enter the ticket id to cancel");
-        ticketId = s.next();
-
+    public Boolean cancelBooking(String ticketId) {
         if (ticketId == null || ticketId.isEmpty()) {
             System.out.println("Ticket ID cannot be null or empty.");
             return Boolean.FALSE;
         }
 
-        String finalTicketId1 = ticketId;  //Because strings are immutable
-        boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId1));
+        boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(ticketId));
 
-        String finalTicketId = ticketId;
-        user.getTicketsBooked().removeIf(Ticket -> Ticket.getTicketId().equals(finalTicketId));
         if (removed) {
+            try {
+                saveUserListToFile();
+            } catch (IOException ex) {
+                System.out.println("Failed to persist cancellation.");
+            }
             System.out.println("Ticket with ID " + ticketId + " has been canceled.");
             return Boolean.TRUE;
-        }else{
-        System.out.println("No ticket found with ID " + ticketId);
+        } else {
+            System.out.println("No ticket found with ID " + ticketId);
             return Boolean.FALSE;
         }
     }

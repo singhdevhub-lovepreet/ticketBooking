@@ -19,7 +19,7 @@ repositories {
 dependencies {
     // This dependency is used by the application.
     implementation libs.guava
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.6'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.4'
     implementation 'org.projectlombok:lombok:1.18.22'
     implementation 'org.mindrot:jbcrypt:0.4'
 

@@ -1,0 +1,18 @@
+# Build outputs
+/app/build/
+/.gradle/
+/build/
+
+# IDE
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+
+# Compiled class files
+*.class
+
+# Sensitive data - local DB files contain user credentials
+# Uncomment the line below to prevent committing user data in production:
+# app/src/main/java/ticket/booking/localDB/users.json
