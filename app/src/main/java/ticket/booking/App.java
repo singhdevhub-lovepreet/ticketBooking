@@ -3,15 +3,12 @@ package ticket.booking;
 import ticket.booking.entities.Train;
 import ticket.booking.entities.User;
 import ticket.booking.service.UserBookingService;
-import ticket.booking.util.UserServiceUtil;
+import ticket.booking.util.UserFactory;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class App {
 
@@ -43,15 +40,15 @@ public class App {
                     String nameToSignUp = scanner.next();
                     System.out.println("Enter the password to signup");
                     String passwordToSignUp = scanner.next();
-                    User userToSignup = new User(nameToSignUp, passwordToSignUp, UserServiceUtil.hashPassword(passwordToSignUp), new ArrayList<>(), UUID.randomUUID().toString());
+                    User userToSignup = UserFactory.createUser(nameToSignUp, passwordToSignUp);
                     userBookingService.signUp(userToSignup);
                     break;
                 case 2:
                     System.out.println("Enter the username to Login");
                     String nameToLogin = scanner.next();
-                    System.out.println("Enter the password to signup");
+                    System.out.println("Enter the password to Login");
                     String passwordToLogin = scanner.next();
-                    User userToLogin = new User(nameToLogin, passwordToLogin, UserServiceUtil.hashPassword(passwordToLogin), new ArrayList<>(), UUID.randomUUID().toString());
+                    User userToLogin = UserFactory.createUser(nameToLogin, passwordToLogin);
                     try{
                         userBookingService = new UserBookingService(userToLogin);
                     }catch (IOException ex){
