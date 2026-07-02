@@ -63,7 +63,7 @@ public class TrainService {
         try {
             objectMapper.writeValue(new File(TRAIN_DB_PATH), trainList);
         } catch (IOException e) {
-            e.printStackTrace(); // Handle the exception based on your application's requirements
+            System.out.println("Failed to save train data.");
         }
     }
 
