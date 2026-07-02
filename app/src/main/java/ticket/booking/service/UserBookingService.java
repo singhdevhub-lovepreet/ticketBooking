@@ -50,6 +50,8 @@ public class UserBookingService{
             saveUserListToFile();
             return Boolean.TRUE;
         }catch (IOException ex){
+            System.out.println("Failed to sign up user: " + ex.getMessage());
+            userList.remove(user1);
             return Boolean.FALSE;
         }
     }
@@ -60,17 +62,26 @@ public class UserBookingService{
     }
 
     public void fetchBookings(){
+        if (user == null) {
+            System.out.println("Please login first to fetch bookings.");
+            return;
+        }
         Optional<User> userFetched = userList.stream().filter(user1 -> {
             return user1.getName().equals(user.getName()) && UserServiceUtil.checkPassword(user.getPassword(), user1.getHashedPassword());
         }).findFirst();
         if(userFetched.isPresent()){
             userFetched.get().printTickets();
+        } else {
+            System.out.println("User not found. Please check your credentials.");
         }
     }
 
-        // todo: Complete this function
-         public Boolean cancelBooking(String ticketId){
-    
+    public Boolean cancelBooking(String ticketId){
+        if (user == null) {
+            System.out.println("Please login first to cancel a booking.");
+            return Boolean.FALSE;
+        }
+
         Scanner s = new Scanner(System.in);
         System.out.println("Enter the ticket id to cancel");
         ticketId = s.next();
@@ -80,16 +91,19 @@ public class UserBookingService{
             return Boolean.FALSE;
         }
 
-        String finalTicketId1 = ticketId;  //Because strings are immutable
-        boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId1));
-
         String finalTicketId = ticketId;
-        user.getTicketsBooked().removeIf(Ticket -> Ticket.getTicketId().equals(finalTicketId));
+        boolean removed = user.getTicketsBooked().removeIf(ticket -> ticket.getTicketId().equals(finalTicketId));
+
         if (removed) {
-            System.out.println("Ticket with ID " + ticketId + " has been canceled.");
+            try {
+                saveUserListToFile();
+                System.out.println("Ticket with ID " + ticketId + " has been canceled.");
+            } catch (IOException ex) {
+                System.out.println("Ticket was removed but failed to save changes: " + ex.getMessage());
+            }
             return Boolean.TRUE;
-        }else{
-        System.out.println("No ticket found with ID " + ticketId);
+        } else {
+            System.out.println("No ticket found with ID " + ticketId);
             return Boolean.FALSE;
         }
     }
@@ -100,6 +114,7 @@ public class UserBookingService{
             TrainService trainService = new TrainService();
             return trainService.searchTrains(source, destination);
         }catch(IOException ex){
+            System.out.println("Failed to load train data: " + ex.getMessage());
             return new ArrayList<>();
         }
     }
@@ -117,14 +132,17 @@ public class UserBookingService{
                     seats.get(row).set(seat, 1);
                     train.setSeats(seats);
                     trainService.addTrain(train);
-                    return true; // Booking successful
+                    return true;
                 } else {
-                    return false; // Seat is already booked
+                    System.out.println("Seat is already booked.");
+                    return false;
                 }
             } else {
-                return false; // Invalid row or seat index
+                System.out.println("Invalid row or seat number.");
+                return false;
             }
         }catch (IOException ex){
+            System.out.println("Failed to book seat due to a system error: " + ex.getMessage());
             return Boolean.FALSE;
         }
     }
